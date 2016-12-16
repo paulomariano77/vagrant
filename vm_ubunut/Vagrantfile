@@ -5,8 +5,13 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define "vm_ubuntu" do |vm_ubuntu|
         vm_ubuntu.vm.box = "ubuntu/trusty64"
+        vm_ubuntu.vm.hostname = "vmubuntu"
         vm_ubuntu.vm.network :private_network, ip: "192.168.33.21"
-        vm_ubuntu.vm.provision "shell", path: "webserver.sh"
+#       vm_ubuntu.vm.provision "shell", path: "webserver.sh"
+        vm_ubuntu.vm.provision "ansible" do |ansible|
+            ansible.playbook = "webserver.yml"
+            ansible.verbose = "vvv"
+        end
     end
 
     config.vm.provider "virtualbox" do |vbox|
