@@ -6,10 +6,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define "vm_ubuntu" do |vm_ubuntu|
         vm_ubuntu.vm.box = "ubuntu/trusty64"
         vm_ubuntu.vm.network :private_network, ip: "192.168.33.21"
-        
-        vm_ubuntu.vm.provision "shell" do |sh|
-            sh.path = "webserver.sh"
-        end
+        vm_ubuntu.vm.provision "shell", path: "webserver.sh"
     end
 
     config.vm.provider "virtualbox" do |vbox|

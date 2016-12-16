@@ -1,0 +1,18 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.require_version ">= 1.3.5"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.define "vm_debian" do |vm_debian|
+        vm_debian.vm.box = "debian/jessie64"
+        vm_debian.vm.hostname = "vmdebian"
+        vm_debian.vm.network :public_network, ip: "192.168.33.22"
+        vm_debian.vm.provision "shell", path: "shell.sh"
+    end
+    
+    config.vm.provider "virtualbox" do |vbox|
+        vbox.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+end
