@@ -1,10 +1,10 @@
 ---
 - hosts: all
-  sudo: true
+  sudo: True
   user: vagrant
   tasks:
     - name: "Update packeges"
-      shell: sudo apt-get Update
+      shell: sudo apt-get update
         
     - name: "Install nginx"
       shell: sudo apt-get -y install nginx

@@ -2,12 +2,14 @@
 # vi: set ft=ruby
 
 VAGRANTFILE_API_VERSION = "2"
+#ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define "vm_ubuntu" do |vm_ubuntu|
         vm_ubuntu.vm.box = "ubuntu/trusty64"
         vm_ubuntu.vm.hostname = "vmubuntu"
         vm_ubuntu.vm.network :private_network, ip: "192.168.33.21"
-#       vm_ubuntu.vm.provision "shell", path: "webserver.sh"
+#        vm_ubuntu.vm.provision "shell", path: "webserver.sh"
         vm_ubuntu.vm.provision "ansible" do |ansible|
             ansible.playbook = "webserver.yml"
             ansible.verbose = "vvv"
@@ -15,6 +17,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.provider "virtualbox" do |vbox|
-        vbox.customize ["modifyvm", :id, "--memory", "2024"]
+        vbox.customize ["modifyvm", :id, "--memory", "1024"]
     end
 end
