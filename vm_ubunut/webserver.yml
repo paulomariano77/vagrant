@@ -3,8 +3,14 @@
   sudo: True
   user: vagrant
   tasks:
-    - name: "Update packeges"
-      shell: sudo apt-get update
-        
-    - name: "Install nginx"
-      shell: sudo apt-get -y install nginx
+    - name: "Install the nginx packages"
+      yum:
+        name=nginx state=present update_cache=yes
+      with_items: redhat_pkg
+      when: ansible_os_family == "RedHat"
+    
+    - name: "Install the nginx packages"
+      apt:
+        name=nginx state=present update_cache=yes install_recommends=yes
+      with_items: ubuntu_pkg
+      when: ansible_os_family == "Debian"
