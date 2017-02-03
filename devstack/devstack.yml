@@ -1,0 +1,41 @@
+---
+- name: "Install and Configure DevStack"
+  hosts: all
+  sudo: true
+  user: root
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: "Add user stack"
+      user:
+        name: stack
+        comment: "DevStack"
+
+    - name: "Set sudo privileges for user stack"
+      shell: 'echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
+
+    - name: "Install git"
+      yum:
+        name: git
+        state: latest
+
+    - name: "Clone DevStack git repo"
+      # shell: "git clone https://git.openstack.org/openstack-dev/devstack /home/stack/devstack"
+      # sudo: yes
+      # sudo_user: stack
+      git:
+        repo: https://git.openstack.org/openstack-dev/devstack
+        dest: /home/stack/devstack
+
+    - name: "Copy local.conf for /home/stack/devstack"
+      template:
+        src: local.conf.j2
+        dest: /home/stack/devstack/local.conf
+        mode: 0655
+
+    - name: "Install Devstack"
+      shell: /home/stack/devstack/stack.sh
+      args:
+        executable: "/bin/bash"
+      sudo: yes
+      sudo_user: stack
