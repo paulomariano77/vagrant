@@ -11,11 +11,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     devstack.vm.provision "ansible" do |ansible|
       ansible.playbook = "devstack.yml"
-      ansible.verbose = "vvv"
+      # ansible.verbose = "vvv"
     end
   end
 
   config.vm.provider "virtualbox" do |vbox|
-    vbox.customize ["modifyvm", :id, "--memory", "6144", "--cpus", "4"]
+    vbox.customize ["modifyvm", :id, "--memory", "8192", "--cpus", "4"]
   end
 end

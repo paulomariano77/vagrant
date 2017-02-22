@@ -8,7 +8,7 @@
   tasks:
     - name: "Add user stack"
       user:
-        name: stack
+        name: "{{ user_devstack }}"
         comment: "DevStack"
 
     - name: "Set sudo privileges for user stack"
@@ -26,6 +26,8 @@
       git:
         repo: https://git.openstack.org/openstack-dev/devstack
         dest: /home/stack/devstack
+      sudo: yes
+      sudo_user: "{{ user_devstack }}"
 
     - name: "Copy local.conf for /home/stack/devstack"
       template:
@@ -38,4 +40,6 @@
       args:
         executable: "/bin/bash"
       sudo: yes
-      sudo_user: stack
+      sudo_user: "{{ user_devstack }}"
+      async: 3600
+      poll: 30

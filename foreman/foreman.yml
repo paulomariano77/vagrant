@@ -1,0 +1,48 @@
+---
+- name: "Install and Configure Foreman"
+  hosts: all
+  sudo: true
+  user: root
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: "Update"
+      package:
+        name: '*'
+        state: latest
+
+    - name: "Install puppetlabs"
+      package:
+        name: "{{ puppetlabs }}"
+        state: present
+
+    - name: "Install epel-release"
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ epel_release }}"
+
+    - name: "Download Foreman"
+      package:
+        name: foreman-installer
+        state: present
+      register: foreman_download
+
+    - name: "Install Foreman"
+      command: foreman-installer
+      when: foreman_download|changed
+      register: foreman
+
+    - name: "Get config file Foreman"
+      shell: 'echo "{{ foreman.stdout_lines }}" > ~/foreman.cfg'
+      when: foreman|changed
+
+    - name: "Install plugin"
+      package:
+        name: tfm-rubygem-foreman_column_view
+        state: present
+
+    - name: "Restart httpd"
+      service:
+        name: httpd
+        state: restarted
