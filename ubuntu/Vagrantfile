@@ -2,20 +2,25 @@
 # vi: set ft=ruby
 
 VAGRANTFILE_API_VERSION = "2"
-BOX_NAME = ENV['VAGRANT_BOX_NAME'] || "bento/centos-7.3"
-HOST_NAME = "m1"
-IP_ADDRESS = "192.168.10.2"
-PLAYBOOK_PATH = "webserver.yml"
+BOX_NAME = ENV['VAGRANT_BOX_NAME'] || "ubuntu/trusty64"
+HOST_NAME = "web"
+IP_ADDRESS = "192.168.50.10"
+# PLAYBOOK_PATH = "webserver.yml"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    config.vm.define "virtualmachine" do |virtualmachine|
+    config.vm.define "web" do |virtualmachine|
         virtualmachine.vm.box = BOX_NAME
         virtualmachine.vm.hostname = HOST_NAME
-        virtualmachine.vm.network :private_network, ip: IP_ADDRESS
+        virtualmachine.vm.network "private_network", ip: IP_ADDRESS
 
-        virtualmachine.vm.provision "ansible" do |ansible|
-            ansible.playbook = PLAYBOOK_PATH
-            ansible.verbose = "vvv"
+        # virtualmachine.vm.provision "ansible" do |ansible|
+        #     ansible.playbook = PLAYBOOK_PATH
+        #     ansible.verbose = "vvv"
+        # end
+
+        virtualmachine.vm.provision "puppet" do |puppet|
+          puppet.manifests_path = "manifests"
+          puppet.manifests_file = "web.pp"
         end
     end
 
