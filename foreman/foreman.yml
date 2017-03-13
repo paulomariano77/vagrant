@@ -28,21 +28,42 @@
         state: present
       register: foreman_download
 
-    - name: "Install Foreman"
-      command: foreman-installer
+    - block:
+      - name: "Install Foreman"
+        command: foreman-installer
+        register: foreman
+
+      - name: "Get config file Foreman"
+        shell: 'echo "{{ foreman.stdout_lines }}" > ~/foreman.cfg'
+
+      - name: "Install plugin"
+        package:
+          name: tfm-rubygem-foreman_column_view
+          state: present
+
+      - name: "Restart httpd"
+        service:
+          name: httpd
+          state: restarted
+
+      - name: install git
+        package:
+          name: git
+          state: present
+
+      - name: clone git repo rbaselines
+        command: cd /etc/puppetlabs/code/modules && git clone https://github.com/andreramoni/puppet-rbaselines rbaselines
+
+      - name: execute configs foreman
+        command: /etc/puppetlabs/code/modules/rbaselines/deps.sh
+
+      - name: create site.pp
+        template:
+          src: site.pp
+          dest: /etc/puppetlabs/code/environments/production/manifests/
+          mode: 0644
+
+      - name: rum Puppet agent
+        command: puppet agent -t
+
       when: foreman_download|changed
-      register: foreman
-
-    - name: "Get config file Foreman"
-      shell: 'echo "{{ foreman.stdout_lines }}" > ~/foreman.cfg'
-      when: foreman|changed
-
-    - name: "Install plugin"
-      package:
-        name: tfm-rubygem-foreman_column_view
-        state: present
-
-    - name: "Restart httpd"
-      service:
-        name: httpd
-        state: restarted

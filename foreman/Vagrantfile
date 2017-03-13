@@ -21,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     foreman.vm.network "public_network", use_dhcp_assigned_default_route: true, bridge: "enp0s25"
     foreman.vm.network "private_network", ip: "192.168.33.10"
   end
-
+  #
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not rvaecommended.
