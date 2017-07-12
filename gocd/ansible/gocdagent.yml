@@ -1,0 +1,17 @@
+- name: install gocd agent
+  hosts: all
+  become: yes
+  tasks:
+    - name: include common settings
+      include: common.yml
+
+    - name: install gocd server
+      yum:
+        name: go-agent
+        state: present
+    
+    - name: hability gocd
+      service:
+        name: go-agent
+        state: started
+        enabled: yes

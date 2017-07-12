@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby
+
+VAGRANTFILE_API_VERSION = "2"
+BOX_NAME = ENV['VAGRANT_BOX_NAME'] || "bento/centos-7.3"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.define "gocdserver" do |gocdserver|
+        gocdserver.vm.box = BOX_NAME
+        gocdserver.vm.hostname = "gocdserver"
+        gocdserver.vm.network :private_network, ip: "192.168.10.10"
+
+        gocdserver.vm.provision "ansible" do |ansible|
+            ansible.playbook = "ansible/gocdserver.yml"
+        end
+    end
+
+    config.vm.define "gocdagent" do |gocdagent|
+        gocdagent.vm.box = BOX_NAME
+        gocdagent.vm.hostname = "gocdagent"
+        gocdagent.vm.network :private_network, ip: "192.168.10.11"
+
+        gocdagent.vm.provision "ansible" do |ansible|
+          ansible.playbook = "ansible/gocdagent.yml"
+        end
+    end
+
+    config.vm.provider "virtualbox" do |vbox|
+        vbox.customize ["modifyvm", :id]
+        vbox.memory = 2048
+        vbox.cpus = 2
+    end
+end

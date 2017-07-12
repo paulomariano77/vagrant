@@ -1,0 +1,26 @@
+---
+- name: update packages
+  yum:
+    name: "*"
+    state: latest
+
+- name: Add EPEL repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    enabled: yes
+
+- name: install openjdk
+  yum:
+    name: java-1.8.0-openjdk
+    state: latest
+
+- name: Add gocd repository
+  yum_repository:
+    name: gocd
+    description: GOCD YUM repo
+    baseurl: https://download.gocd.io
+    enabled: yes
+    gpgkey: https://download.gocd.io/GOCD-GPG-KEY.asc
+    gpgcheck: yes
